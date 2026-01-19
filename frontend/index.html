@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Azure Cloud App</title>
-</head>
 <body>
-  <h1>Frontend on Azure App Service</h1>
+  <h1>Frontend on Azure</h1>
   <button onclick="callApi()">Call Backend</button>
-  <p id="output"></p>
+  <p id="out"></p>
 
   <script>
     async function callApi() {
       const res = await fetch("https://BACKEND_APP_NAME.azurewebsites.net/api/hello");
       const data = await res.json();
-      document.getElementById("output").innerText =
-        data.message + " | DB Time: " + data.time;
+      document.getElementById("out").innerText = data.message + " | " + data.db_time;
     }
   </script>
 </body>

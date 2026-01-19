@@ -9,7 +9,7 @@ const client = new Client({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: 5432,
+  port: process.env.DB_PORT,
   ssl: { rejectUnauthorized: false }
 });
 
@@ -18,8 +18,8 @@ client.connect();
 app.get("/api/hello", async (req, res) => {
   const result = await client.query("SELECT NOW()");
   res.json({
-    message: "Hello from Backend API 🚀",
-    time: result.rows[0].now
+    message: "Hello from Backend 🚀",
+    db_time: result.rows[0].now
   });
 });
 

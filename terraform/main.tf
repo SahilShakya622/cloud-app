@@ -22,6 +22,7 @@ resource "azurerm_linux_web_app" "backend" {
     DB_USER     = "dbadmin"
     DB_PASSWORD = "Password@123"
     DB_NAME     = "postgres"
+    DB_PORT     = "5432"
   }
 
   site_config {
