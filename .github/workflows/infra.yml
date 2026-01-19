@@ -1,0 +1,27 @@
+name: Infra CI/CD
+
+on:
+  push:
+    paths:
+      - "terraform/**"
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - run: |
+          cd terraform
+          terraform init
+          terraform apply -auto-approve \
+            -var="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" \
+            -var="frontend_app_name=${{ secrets.FRONTEND_APP_NAME }}" \
+            -var="backend_app_name=${{ secrets.BACKEND_APP_NAME }}"
