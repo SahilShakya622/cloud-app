@@ -11,15 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout code
       - uses: actions/checkout@v4
 
-      - uses: azure/login@v2
+      # 2️⃣ Azure Login (Service Principal)
+      - name: Azure Login
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: false
 
-      - uses: hashicorp/setup-terraform@v3
+      # 3️⃣ Export ARM env vars for Terraform
+      - name: Set ARM Environment Variables
+        run: |
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
 
-      - run: |
+      # 4️⃣ Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      # 5️⃣ Terraform Init & Apply
+      - name: Terraform Apply
+        run: |
           cd terraform
           terraform init
           terraform apply -auto-approve \
