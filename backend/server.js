@@ -18,7 +18,7 @@ client.connect();
 app.get("/api/hello", async (req, res) => {
   const result = await client.query("SELECT NOW()");
   res.json({
-    message: "Hello from Backend 🚀",
+    message: "Hello from Backend 🚀.",
     db_time: result.rows[0].now
   });
 });
