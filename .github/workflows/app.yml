@@ -1,13 +1,27 @@
 name: App CI/CD
 
 on:
+  # 1️⃣ Run after infra pipeline
   workflow_run:
     workflows: ["Infra CI/CD"]
     types: [completed]
 
+  # 2️⃣ Run when app code changes
+  push:
+    branches: [ main ]
+    paths:
+      - "frontend/**"
+      - "backend/**"
+      - ".github/workflows/app.yml"
+
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Ensure infra-triggered runs deploy ONLY on success
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success')
+
     runs-on: ubuntu-latest
 
     steps:
@@ -17,12 +31,14 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - uses: azure/webapps-deploy@v2
+      - name: Deploy Backend
+        uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.BACKEND_APP_NAME }}
           package: backend
 
-      - uses: azure/webapps-deploy@v2
+      - name: Deploy Frontend
+        uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.FRONTEND_APP_NAME }}
           package: frontend
