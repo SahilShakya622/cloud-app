@@ -1,7 +1,10 @@
 const express = require("express");
+const cors = require("cors");
 const { Client } = require("pg");
 
 const app = express();
+app.use(cors()); // ✅ THIS LINE FIXES THE ISSUE
+
 const PORT = process.env.PORT || 8080;
 
 const client = new Client({
